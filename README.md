@@ -29,7 +29,7 @@ Inside the project folder (where package.json is located):
 
     # npm install
 
-**4. Run the application locally to verify it works**
+**4. -#IMPORTANT#- Run the application locally to verify it works**
 
     # node server.js
 
