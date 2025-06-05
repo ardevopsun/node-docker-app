@@ -1,11 +1,11 @@
-**Simple Nodejs Docker App – Local to Docker Deployment Steps by Step**
+**Simple Nodejs Docker App – Build, Test and deploy the code from Local to DockerHub**
 
 **1. Get the Node.js code from the developer**
 
 •	Clone or download the code from GitHub, GitLab, or zip.
 
     git clone <repo-url>
-    cd <project-folder>
+    cd <node-docker-app>
 
 **2. Install Node.js on your base machine (laptop or server)**
 
@@ -29,55 +29,58 @@ Inside the project folder (where package.json is located):
 
     # npm install
 
-**4. -#IMPORTANT#- Run the application locally to verify it works**
+    **#IMPORTANT#- Run the application locally to verify it works**
 
-    # node server.js
+    # npm start
 
     Now, access it at:_http://localhost:PORT_
 
-⚠️ If server.js is listening on port 80, you might need to use sudo node server.js
-
 **Note:** update your code to listen on 3000 or any user port to avoid permission issues.
 
-**5. Once verified locally, containerize with Docker**
+**4. Once verified locally, containerize with Docker**
 
 Create a Dockerfile in the root of your project:
 
     FROM node:18
-    WORKDIR /app
-    COPY package.json /app
+    WORKDIR /usr/src/app
+    COPY package*.json ./
+    COPY app.js ./
     RUN npm install
-    COPY . /app
     EXPOSE 3000
-    CMD ["node", "server.js"]
+    CMD ["node", "app.js"]
 
-  Make sure server.js listens on:
-  
-    const PORT = process.env.PORT || 3000; 
-    app.listen(PORT, () => {  
-    console.log(`Server is running on port ${PORT}`);    
-    });
-
-
-**6. Build the Docker image**
+**5. Build the Docker image**
 
 From the root of the project folder:
 
-    #docker build -t my-node-app .
+    #docker build -t node-docker-app:v1.0 .
 
-**7. Run the container**
+**Run the container**
 
-    #sudo docker run -p 3000:3000 my-node-app
+    #docker run -d -p 3000:3000 --name node-app-container node-docker-app:v1.0
 
-To run it in the background:
-
-    #sudo docker run -d -p 3000:3000 my-node-app
-
-**8. Test the app in your browser**
+**6. Test the app in your browser**
 
   Use your EC2 IP or localhost:
   
       #http://<EC2-IP>:3000
   
   Make sure port 3000 is allowed in your EC2 security group if you're testing from a remote location.
+
+**7. Push Docker Image to Docker Hub**
+
+  Make sure you’re logged in:
+  
+    #docker login
+  
+    #docker tag node-docker-app:v1.0 ardevopsun/node-docker-app:v1.0
+  
+    #docker push ardevopsun/node-docker-app:v1.0
+
+**8. Pull and Run From Docker Hub**
+
+    #docker pull ardevopsun/node-docker-app:v1.0
+   
+    #docker run -d -p 3000:3000 --name node-from-hub ardevopsun/node-docker-app:v1.0
+
 
