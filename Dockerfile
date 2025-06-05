@@ -1,13 +1,12 @@
-FROM node:12
+FROM node:18
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY package.json /app
+COPY package*.json ./
+COPY app.js ./
 
 RUN npm install
 
-COPY . /app
+EXPOSE 3000
 
-EXPOSE 80
-
-CMD ["node", "server.js"]
+CMD ["node", "app.js"]
