@@ -67,20 +67,37 @@ From the root of the project folder:
   
   Make sure port 3000 is allowed in your EC2 security group if you're testing from a remote location.
 
-**7. Push Docker Image to Docker Hub**
+**7. Push Docker Image to Docker Hub or AWS ECR**
 
-  Make sure you’re logged in:
+  Make sure you’re logged in DockerHub:
   
     #docker login
   
-    #docker tag node-docker-app:v1.0 ardevopsun/node-docker-app:v1.0
+    #docker tag node-docker-app:v1.0 <dockerHub_username>/node-docker-app:v1.0
   
-    #docker push ardevopsun/node-docker-app:v1.0
+    #docker push <dockerHub_username>/node-docker-app:v1.0
 
-**8. Pull and Run From Docker Hub**
+Make sure you’re logged in AWS ECR:
+    
+    #aws ecr create-repository --repository-name react-docker-app
 
-    #docker pull ardevopsun/node-docker-app:v1.0
+    #aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com
+
+    #docker tag react-docker-app:latest <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/react-docker-app:latest
+
+    #docker push <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/react-docker-app:latest
+
+
+**8. Pull and Run From DockerHub or AWS ECR**
+
+  DockerHub:
+  
+    #docker pull <dockerHub_username>/node-docker-app:v1.0
    
-    #docker run -d -p 3000:3000 --name node-from-hub ardevopsun/node-docker-app:v1.0
+    #docker run -d -p 3000:3000 --name node-from-hub <dockerHub_username>/node-docker-app:v1.0
 
+AWS ECR:
 
+    #docker pull <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/node-docker-app:v1.0
+
+    #docker run -d -p 3000:3000 --name node-ecr <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/node-docker-app:v1.0
